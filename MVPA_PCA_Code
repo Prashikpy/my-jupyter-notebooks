@@ -1,0 +1,41 @@
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from factor_analyzer import FactorAnalyzer
+import matplotlib.pyplot as plt
+
+
+# Load the dataset with the second row as the header
+data = pd.read_csv("C:/Users/DELL/Downloads/export-APS-2024-11-27_19-55-30.csv", header=1)
+
+# Select relevant columns
+variables = [
+    "Perceived opportunities", "Perceived capabilities", "Fear of failure rate *", 
+    "Entrepreneurial intentions", "Total early-stage Entrepreneurial Activity (TEA)", 
+    "Established Business Ownership", "Entrepreneurial Employee Activity", 
+    "Motivational Index", "Female/Male TEA", "Female/Male Opportunity-Driven TEA", 
+    "High Job Creation Expectation", "Innovation", "Business Services Sector", 
+    "High Status to Successful Entrepreneurs", "Entrepreneurship as a Good Career Choice"
+]
+
+# Extract relevant data
+data_selected = data[variables]
+
+# Handle missing values if any
+data_selected = data_selected.dropna()
+
+# Standardize the data
+scaler = StandardScaler()
+data_scaled = scaler.fit_transform(data_selected)
+
+# 1. Exploratory Factor Analysis (EFA)
+print("Performing EFA...")
+fa = FactorAnalyzer(n_factors=5, rotation="varimax")  # Change n_factors as needed
+fa.fit(data_scaled)
+
+# Print factor loadings
+efa_loadings = pd.DataFrame(fa.loadings_, index=variables)
+print("EFA Factor Loadings:")
+print(efa_loadings)
+
